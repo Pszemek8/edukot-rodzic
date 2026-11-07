@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#5141a5"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png"><title>EduKot 2.0 – Panel rodzica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fffdf7;--ink:#29283a;--blue:#5141a5;--soft:#f0edff;--line:#d9d2f5;--muted:#706b83;--ok:#39865b;--bad:#b64b55}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:18px 'Patrick Hand',sans-serif}
+.dark{--paper:#171827;--ink:#f2f0ff;--blue:#a99bff;--soft:#25243b;--line:#454064;--muted:#c0bad7;--ok:#85d6a3;--bad:#ff9aa2;color-scheme:dark}
+button,input,textarea{font:inherit}
+header{background:#5141a5;color:white;padding:17px max(18px,calc((100% - 1050px)/2));display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header .logo{width:72px;height:72px;object-fit:contain;display:block;border-radius:12px;background:#fff}
+header h1{font:700 34px Caveat;margin:0}
+header small{display:block}
+header .sp{flex:1}
+.btn{border:2px solid var(--blue);background:white;color:var(--blue);border-radius:11px;padding:7px 13px;cursor:pointer}
+.btn.primary{background:var(--blue);color:white}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.wrap{max-width:1050px;margin:auto;padding:20px}
+.card{background:var(--soft);border:2px solid var(--line);border-radius:17px;padding:18px;margin:14px 0}
+.hero{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.hero .cat{font-size:52px}
+.hero h2{font:700 30px Caveat;color:var(--blue);margin:0}
+.muted{color:var(--muted)}
+label{display:block;margin:10px 0 4px}
+input,textarea{width:100%;border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px}
+.stat b{font-size:27px;color:var(--blue);display:block}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}
+.tabs button{border:2px solid var(--line);background:var(--soft);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer}
+.tabs button.active{background:var(--blue);color:white;border-color:var(--blue)}
+.item{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}
+.item strong{color:var(--blue)}
+.notice{border-left:5px solid var(--blue);padding:10px 13px;background:var(--soft);border-radius:8px;margin:10px 0}
+.error{color:var(--bad)}
+.hidden{display:none!important}
+.tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:14px;background:var(--line);color:var(--ink)}
+.tag.p{background:#d4f0de;color:#1e5c36}
+.tag.u{background:#f8d9dc;color:#8a2e36}
+.dark .tag.p{background:#244332;color:#85d6a3}
+.dark .tag.u{background:#4a292f;color:#ff9aa2}
+.cats{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.cats button{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer}
+.cats button.active{background:var(--blue);color:white;border-color:var(--blue)}
+.cats .add{border-style:dashed}
+.foot{text-align:center;color:var(--muted);padding:24px;font-size:15px}
+@media(max-width:600px){.wrap{padding:12px}header h1{font-size:29px}}
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="/icons/edukot-parent.png" alt="Logo EduKot – panel rodzica">
+  <div><h1>EduKot 2.0</h1><small>Nauka z pazurem! · Panel rodzica</small></div>
+  <div class="sp"></div>
+  <button class="btn" id="theme" type="button">🌙 Motyw</button>
+</header>
+<div class="wrap">
+
+<section id="connect">
+  <div class="card hero"><div class="cat">🐾</div><div><h2 id="connectTitle">Witaj w dzienniku!</h2><div class="muted" id="connectSub">Tutaj sprawdzisz szkolne przygody swojego kotka. Możesz dodać kilku kotków – każdy ma własny kod od nauczyciela.</div></div></div>
+  <div class="card">
+    <h2 id="connectHeading">Połącz konto rodzica</h2>
+    <p class="muted">Wpisz kod zaproszenia otrzymany od nauczyciela. Przy kodzie „natychmiastowym” dziennik otworzy się od razu; w przeciwnym razie poczekaj na akceptację.</p>
+    <form id="request">
+      <label for="invite">Kod zaproszenia</label>
+      <input id="invite" required minlength="4" maxlength="100" autocomplete="off" placeholder="Wpisz kod od nauczyciela">
+      <label for="parentName">Twoje imię lub nazwa opiekuna</label>
+      <input id="parentName" required maxlength="80" placeholder="Np. Anna Kowalska">
+      <label for="contact">Kontakt (opcjonalnie)</label>
+      <input id="contact" maxlength="120" placeholder="Np. adres e-mail lub telefon">
+      <p>
+        <button class="btn primary" type="submit">Wyślij prośbę o dostęp</button>
+        <button class="btn hidden" id="cancelAdd" type="button">Anuluj</button>
+      </p>
+    </form>
+    <div id="requestMsg" class="notice hidden" aria-live="polite"></div>
+  </div>
+  <div id="savedCats" class="card hidden">
+    <h2>Twoje kotki</h2>
+    <div id="savedCatsList" class="cats"></div>
+    <p class="muted">Kliknij kotka, żeby otworzyć jego dziennik, albo dodaj kolejnego kodem od nauczyciela.</p>
+  </div>
+  <div class="notice">🔒 Każdy kod otwiera tylko dane przypisanego dziecka. Możesz mieć kilka kotków naraz – to tylko zabawa i wygoda dla rodzeństwa.</div>
+</section>
+
+<section id="waiting" class="hidden">
+  <div class="card hero">
+    <div class="cat">⏳</div>
+    <div>
+      <h2>Prośba wysłana</h2>
+      <p id="waitingText">Nauczyciel musi zatwierdzić dostęp. Gdy to zrobi, dziennik dziecka otworzy się automatycznie (sprawdzamy co kilka sekund).</p>
+    </div>
+  </div>
+  <button class="btn" id="back" type="button">Wróć</button>
+  <button class="btn" id="checkNow" type="button">Sprawdź teraz</button>
+</section>
+
+<section id="dashboard" class="hidden">
+  <div id="catSwitcher" class="cats" aria-label="Wybór kotka"></div>
+  <div class="card hero">
+    <div class="cat" id="childEmoji">😺</div>
+    <div>
+      <h2 id="childName">Dziennik dziecka</h2>
+      <div class="muted" id="className">EduKot 2.0</div>
+    </div>
+    <div class="sp"></div>
+    <button class="btn" id="refreshData" type="button">Odśwież</button>
+    <button class="btn" id="addCat" type="button">+ Kotek</button>
+    <button class="btn" id="logoutOne" type="button">Usuń tego</button>
+    <button class="btn danger" id="logout" type="button">Wyloguj wszystkich</button>
+  </div>
+  <div class="grid">
+    <div class="stat"><b id="avg">—</b>Średnia ocen</div>
+    <div class="stat"><b id="presence">—</b>Obecność</div>
+    <div class="stat"><b id="nextTest">—</b>Najbliższy sprawdzian</div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="active" data-tab="grades" type="button">📒 Oceny</button>
+    <button data-tab="attendance" type="button">✅ Obecności</button>
+    <button data-tab="remarks" type="button">⭐ Uwagi</button>
+    <button data-tab="tests" type="button">📝 Sprawdziany</button>
+    <button data-tab="plan" type="button">🗓️ Plan</button>
+  </div>
+  <div id="content" class="card"></div>
+</section>
+
+</div>
+<div class="foot">EduKot 2.0 · Dane dziecka są dostępne tylko po zatwierdzeniu przez nauczyciela. 🐱</div>
+
+<script>
+const $=s=>document.querySelector(s);
+let parentData=null;
+let currentTab='grades';
+let addingExtra=false;
+
+const API_BASE=(()=>{try{return localStorage.getItem('edukot-api-base')}catch{return null}})()||'https://edukot-nauczyciel.vercel.app';
+const SESSIONS_KEY='edukot-parent-sessions'; // [{session, childId, childName, emoji}]
+const ACTIVE_KEY='edukot-parent-active';
+const REQ='edukot-request-id';
+const LEGACY_SESS='edukot-parent-session';
+
+function esc(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function loadSessions(){
+  try{
+    // migracja ze starego pojedynczego klucza
+    const legacy=localStorage.getItem(LEGACY_SESS);
+    if(legacy){
+      const list=JSON.parse(localStorage.getItem(SESSIONS_KEY)||'[]');
+      if(!list.some(x=>x.session===legacy)){
+        list.push({session:legacy,childId:'',childName:'Kotek',emoji:'😺'});
+        localStorage.setItem(SESSIONS_KEY,JSON.stringify(list));
+        localStorage.setItem(ACTIVE_KEY,legacy);
+      }
+      localStorage.removeItem(LEGACY_SESS);
+    }
+    return JSON.parse(localStorage.getItem(SESSIONS_KEY)||'[]');
+  }catch{return []}
+}
+function saveSessions(list){
+  localStorage.setItem(SESSIONS_KEY,JSON.stringify(list));
+}
+function getActiveSession(){
+  const list=loadSessions();
+  const active=localStorage.getItem(ACTIVE_KEY);
+  if(active&&list.some(x=>x.session===active))return active;
+  if(list[0]){localStorage.setItem(ACTIVE_KEY,list[0].session);return list[0].session}
+  return null;
+}
+function upsertSession(entry){
+  const list=loadSessions().filter(x=>x.session!==entry.session&&!(entry.childId&&x.childId===entry.childId));
+  list.push(entry);
+  saveSessions(list);
+  localStorage.setItem(ACTIVE_KEY,entry.session);
+}
+function removeSession(session){
+  const list=loadSessions().filter(x=>x.session!==session);
+  saveSessions(list);
+  const active=localStorage.getItem(ACTIVE_KEY);
+  if(active===session){
+    if(list[0])localStorage.setItem(ACTIVE_KEY,list[0].session);
+    else localStorage.removeItem(ACTIVE_KEY);
+  }
+}
+
+$('#theme').onclick=()=>{
+  document.documentElement.classList.toggle('dark');
+  localStorage.setItem('edukot-parent-theme',document.documentElement.classList.contains('dark')?'dark':'light');
+};
+if(localStorage.getItem('edukot-parent-theme')==='dark')document.documentElement.classList.add('dark');
+
+function showConnect(extra){
+  addingExtra=!!extra;
+  $('#connect').classList.remove('hidden');
+  $('#waiting').classList.add('hidden');
+  $('#dashboard').classList.add('hidden');
+  if(extra){
+    $('#connectTitle').textContent='Dodaj kolejnego kotka';
+    $('#connectSub').textContent='Wpisz kolejny kod od nauczyciela. Obecne kotki zostaną zachowane.';
+    $('#connectHeading').textContent='Nowy kod zaproszenia';
+    $('#cancelAdd').classList.remove('hidden');
+    const lastName=loadSessions().map(x=>x.parentName).filter(Boolean).pop();
+    if(lastName&&!$('#parentName').value)$('#parentName').value=lastName;
+  }else{
+    $('#connectTitle').textContent='Witaj w dzienniku!';
+    $('#connectSub').textContent='Tutaj sprawdzisz szkolne przygody swojego kotka. Możesz dodać kilku kotków – każdy ma własny kod od nauczyciela.';
+    $('#connectHeading').textContent='Połącz konto rodzica';
+    $('#cancelAdd').classList.add('hidden');
+  }
+  renderSavedCatsOnConnect();
+}
+
+function renderSavedCatsOnConnect(){
+  const list=loadSessions();
+  const box=$('#savedCats');
+  const el=$('#savedCatsList');
+  if(!list.length){box.classList.add('hidden');return}
+  box.classList.remove('hidden');
+  el.innerHTML=list.map(c=>`<button type="button" data-open-session="${esc(c.session)}">${esc(c.emoji||'😺')} ${esc(c.childName||'Kotek')}</button>`).join('')+
+    `<button type="button" class="add" id="addFromList">+ Dodaj kodem</button>`;
+}
+
+$('#savedCats').addEventListener('click',e=>{
+  const s=e.target.dataset?.openSession;
+  if(s){
+    localStorage.setItem(ACTIVE_KEY,s);
+    loadApprovedSession();
+  }
+  if(e.target.id==='addFromList')showConnect(true);
+});
+
+$('#cancelAdd').onclick=()=>{
+  if(loadSessions().length){
+    loadApprovedSession();
+  }else showConnect(false);
+};
+
+$('#request').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const msg=$('#requestMsg');
+  msg.classList.remove('hidden','error');
+  msg.textContent='Wysyłam prośbę…';
+  try{
+    const r=await fetch(API_BASE+'/api/parent',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        action:'request-access',
+        inviteCode:$('#invite').value.trim(),
+        parentName:$('#parentName').value.trim(),
+        contact:$('#contact').value.trim()
+      })
+    });
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Nie udało się wysłać prośby.');
+    if(d.approved&&d.session){
+      upsertSession({session:d.session,childId:'',childName:'Kotek',emoji:'😺',parentName:$('#parentName').value.trim()});
+      localStorage.removeItem(REQ);
+      msg.textContent='Dostęp przyznany. Otwieram dziennik…';
+      $('#invite').value='';
+      await loadApprovedSession();
+      return;
+    }
+    localStorage.setItem(REQ,d.requestId);
+    msg.textContent='Prośba została wysłana. Poczekaj na zatwierdzenie nauczyciela.';
+    $('#connect').classList.add('hidden');
+    $('#waiting').classList.remove('hidden');
+    $('#waitingText').textContent='Nauczyciel musi zatwierdzić dostęp. Gdy to zrobi, dziennik dziecka otworzy się automatycznie (sprawdzamy co kilka sekund).';
+  }catch(err){
+    msg.textContent=err.message;
+    msg.classList.add('error');
+  }
+});
+
+async function checkRequest(){
+  const id=localStorage.getItem(REQ);
+  if(!id)return;
+  try{
+    const r=await fetch(API_BASE+'/api/parent',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'request-status',requestId:id})
+    });
+    const d=await r.json();
+    if(d.approved&&d.session){
+      upsertSession({session:d.session,childId:'',childName:'Kotek',emoji:'😺'});
+      localStorage.removeItem(REQ);
+      $('#waiting').classList.add('hidden');
+      await loadApprovedSession();
+    }else if(d.status==='rejected'){
+      localStorage.removeItem(REQ);
+      $('#waitingText').textContent='Nauczyciel odrzucił prośbę. Dostęp nie został przyznany. Możesz wrócić i wysłać nową prośbę.';
+    }else if(r.status===404){
+      localStorage.removeItem(REQ);
+      showConnect(addingExtra);
+    }
+  }catch{}
+}
+
+if(localStorage.getItem(REQ)&&!getActiveSession()){
+  $('#connect').classList.add('hidden');
+  $('#waiting').classList.remove('hidden');
+}
+setInterval(checkRequest,5000);
+checkRequest();
+
+$('#back').onclick=()=>showConnect(addingExtra);
+$('#checkNow').onclick=()=>checkRequest();
+
+$('#logout').onclick=()=>{
+  if(!confirm('Wylogować wszystkie kotki z tego urządzenia?'))return;
+  saveSessions([]);
+  localStorage.removeItem(ACTIVE_KEY);
+  localStorage.removeItem(REQ);
+  parentData=null;
+  showConnect(false);
+};
+
+$('#logoutOne').onclick=()=>{
+  const active=getActiveSession();
+  if(!active)return;
+  if(!confirm('Usunąć tego kotka z listy na tym urządzeniu?'))return;
+  removeSession(active);
+  parentData=null;
+  if(getActiveSession())loadApprovedSession();
+  else showConnect(false);
+};
+
+$('#addCat').onclick=()=>showConnect(true);
+$('#refreshData').onclick=()=>loadApprovedSession(true);
+
+$('#tabs').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-tab]');
+  if(!b)return;
+  document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('active',x===b));
+  currentTab=b.dataset.tab;
+  renderTab(currentTab);
+});
+
+$('#catSwitcher').addEventListener('click',e=>{
+  const s=e.target.dataset?.session;
+  if(!s||s===getActiveSession())return;
+  localStorage.setItem(ACTIVE_KEY,s);
+  loadApprovedSession();
+});
+
+function remarkLabel(type){
+  if(type==='p')return {cls:'p',text:'⭐ pochwała'};
+  return {cls:'u',text:'⚠️ uwaga'};
+}
+function attLabel(code){
+  return ({o:'Obecny',nb:'Nieobecny',sp:'Spóźniony',u:'Usprawiedliwiony'})[code]||'Nie wpisano';
+}
+
+function renderCatSwitcher(){
+  const list=loadSessions();
+  const active=getActiveSession();
+  const el=$('#catSwitcher');
+  if(list.length<=1){el.innerHTML='';return}
+  el.innerHTML=list.map(c=>`<button type="button" class="${c.session===active?'active':''}" data-session="${esc(c.session)}">${esc(c.emoji||'😺')} ${esc(c.childName||'Kotek')}</button>`).join('')+
+    `<button type="button" class="add" data-add="1">+ Kotek</button>`;
+}
+
+$('#catSwitcher').addEventListener('click',e=>{
+  if(e.target.dataset?.add)showConnect(true);
+});
+
+function renderTab(tab){
+  const d=parentData||{};
+  const k=d.child||{};
+  const arr=v=>Array.isArray(v)?v:[];
+  let html='';
+  if(tab==='grades'){
+    const grades=arr(k.grades).slice().reverse();
+    html=grades.length
+      ?grades.map(g=>`<div class="item"><strong>${esc(g.value??'—')}</strong> · ${esc(g.subject||'Przedmiot')}<div class="muted">${esc(g.date||'')} ${esc(g.note||'')}</div></div>`).join('')
+      :'<p class="muted">Brak ocen do wyświetlenia.</p>';
+  }else if(tab==='attendance'){
+    const a=d.attendance||{};
+    const rows=Object.entries(a).sort((x,y)=>y[0].localeCompare(x[0]));
+    html=rows.length
+      ?rows.map(([date,day])=>`<div class="item">${esc(date)} · ${esc(attLabel(day[k.id]))}</div>`).join('')
+      :'<p class="muted">Brak wpisów obecności.</p>';
+  }else if(tab==='remarks'){
+    const remarks=arr(k.remarks).slice().reverse();
+    html=remarks.length
+      ?remarks.map(x=>{
+        const t=remarkLabel(x.type);
+        return `<div class="item"><span class="tag ${t.cls}">${t.text}</span><div style="margin-top:6px">${esc(x.text||x.note||'')}</div><div class="muted">${esc(x.date||'')}</div></div>`;
+      }).join('')
+      :'<p class="muted">Brak uwag i pochwał.</p>';
+  }else if(tab==='tests'){
+    const tests=arr(d.tests).slice().sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')));
+    html=tests.length
+      ?tests.map(x=>`<div class="item"><strong>${esc(x.title||x.topic||'Sprawdzian')}</strong><div class="muted">${esc(x.date||'')} · ${esc(x.subject||'')}</div></div>`).join('')
+      :'<p class="muted">Brak zapowiedzianych sprawdzianów.</p>';
+  }else if(tab==='plan'){
+    const plan=arr(d.timetable).slice().sort((a,b)=>String(a.day).localeCompare(String(b.day))||String(a.time).localeCompare(String(b.time)));
+    html=plan.length
+      ?plan.map(x=>`<div class="item"><strong>${esc(x.day||'')}</strong> · ${esc(x.time||'')} · ${esc(x.topic||x.subject||'')}</div>`).join('')
+      :'<p class="muted">Brak planu lekcji.</p>';
+  }
+  $('#content').innerHTML=html;
+}
+
+async function loadApprovedSession(showFeedback){
+  const session=getActiveSession();
+  if(!session){
+    showConnect(false);
+    return;
+  }
+  try{
+    const r=await fetch(API_BASE+'/api/parent',{
+      headers:{'Accept':'application/json','x-parent-session':session},
+      cache:'no-store'
+    });
+    if(r.status===401||r.status===403){
+      removeSession(session);
+      parentData=null;
+      if(getActiveSession())return loadApprovedSession(showFeedback);
+      showConnect(false);
+      if(showFeedback)alert('Sesja wygasła. Poproś nauczyciela o ponowne zatwierdzenie dostępu.');
+      return;
+    }
+    if(!r.ok){
+      if(showFeedback){
+        const d=await r.json().catch(()=>({}));
+        alert(d.error||'Nie udało się pobrać danych.');
+      }
+      return;
+    }
+    const d=await r.json();
+    if(!d.approved||!d.child)return;
+    parentData=d;
+    upsertSession({
+      session,
+      childId:d.child.id||'',
+      childName:d.child.name||'Kotek',
+      emoji:d.child.emoji||'😺',
+      parentName:loadSessions().find(x=>x.session===session)?.parentName||''
+    });
+    $('#connect').classList.add('hidden');
+    $('#waiting').classList.add('hidden');
+    $('#dashboard').classList.remove('hidden');
+    renderCatSwitcher();
+    $('#childName').textContent=(d.child.emoji?d.child.emoji+' ':'')+(d.child.name||'Dziennik dziecka');
+    $('#childEmoji').textContent=d.child.emoji||'😺';
+    $('#className').textContent=[d.school,d.klass].filter(Boolean).join(' · ')||'EduKot 2.0';
+
+    const grades=Array.isArray(d.child.grades)?d.child.grades:[];
+    const avg=grades.length?grades.reduce((s,g)=>s+Number(g.value||0),0)/grades.length:null;
+    $('#avg').textContent=avg===null?'—':avg.toFixed(2);
+
+    const days=Object.values(d.attendance||{}).map(x=>x[d.child.id]).filter(v=>v!==undefined&&v!==null&&v!=='');
+    const present=days.filter(x=>x==='o'||x==='sp').length;
+    $('#presence').textContent=days.length?Math.round(present/days.length*100)+'%':'—';
+
+    const today=new Date().toISOString().slice(0,10);
+    const upcoming=(d.tests||[]).filter(x=>x.date&&x.date>=today).sort((a,b)=>a.date.localeCompare(b.date))[0];
+    $('#nextTest').textContent=upcoming?(upcoming.title||upcoming.topic||upcoming.date):'—';
+
+    renderTab(currentTab);
+    if(showFeedback){
+      const btn=$('#refreshData');
+      const prev=btn.textContent;
+      btn.textContent='✓ Odświeżono';
+      setTimeout(()=>{btn.textContent=prev},1200);
+    }
+  }catch(err){
+    if(showFeedback)alert('Błąd połączenia z serwerem. Sprawdź internet lub adres API.');
+  }
+}
+
+if(getActiveSession())loadApprovedSession();
+else showConnect(false);
+
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
