@@ -117,6 +117,8 @@ input,textarea{width:100%;border:2px solid var(--line);background:var(--paper);c
     <div class="stat"><b id="avg">—</b>Średnia ocen</div>
     <div class="stat"><b id="presence">—</b>Obecność</div>
     <div class="stat"><b id="nextTest">—</b>Najbliższy sprawdzian</div>
+    <div class="stat"><b id="plusCount">0</b>➕ Plusy</div>
+    <div class="stat"><b id="minusCount">0</b>➖ Minusy</div>
   </div>
   <div class="tabs" id="tabs">
     <button class="active" data-tab="grades" type="button">📒 Oceny</button>
@@ -454,6 +456,9 @@ async function loadApprovedSession(showFeedback){
     $('#className').textContent=[d.school,d.klass].filter(Boolean).join(' · ')||'EduKot 2.0';
 
     const grades=Array.isArray(d.child.grades)?d.child.grades:[];
+    const points=d.child.points||{};
+    $('#plusCount').textContent=Number(points.plus)||0;
+    $('#minusCount').textContent=Number(points.minus)||0;
     const avg=grades.length?grades.reduce((s,g)=>s+Number(g.value||0),0)/grades.length:null;
     $('#avg').textContent=avg===null?'—':avg.toFixed(2);
 
